@@ -15,14 +15,16 @@ class UserController {
 
     public function create() {
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-            $username = $_POST['username'];
-            $password = $_POST['password'];
-            $email = $_POST['email'];
-            $full_name = $_POST['full_name'];
-            $phone = $_POST['phone'];
-            $role = $_POST['role'];
+            $userData = [
+                'username' => $_POST['username'],
+                'password' => $_POST['password'],
+                'email' => $_POST['email'],
+                'full_name' => $_POST['full_name'],
+                'phone' => $_POST['phone'],
+                'role' => $_POST['role']
+            ];
 
-            if ($this->userModel->createUser($username, $password, $email, $full_name, $phone, $role)) {
+            if ($this->userModel->createUser($userData)) {
                 header('Location: index.php?controller=user&action=index');
                 exit();
             }
@@ -38,29 +40,37 @@ class UserController {
             exit();
         }
 
-        $userId = $_SESSION['user']['id'];
+        // Get user ID from URL parameter
+        $userId = isset($_GET['id']) ? $_GET['id'] : null;
+        
+        // If no ID provided, redirect to index
+        if (!$userId) {
+            header('Location: index.php?controller=user&action=index');
+            exit();
+        }
+
+        // Get user data
         $user = $this->userModel->getUserById($userId);
+        
+        // If user not found, redirect to index
+        if (!$user) {
+            $_SESSION['error'] = 'Không tìm thấy người dùng';
+            header('Location: index.php?controller=user&action=index');
+            exit();
+        }
 
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             // Get and trim input
             $email = trim($_POST['email'] ?? '');
             $full_name = trim($_POST['full_name'] ?? '');
             $phone = trim($_POST['phone'] ?? '');
-            $current_password = trim($_POST['current_password'] ?? '');
-            $new_password = trim($_POST['new_password'] ?? '');
-            $confirm_password = trim($_POST['confirm_password'] ?? '');
-
+            $role = trim($_POST['role'] ?? '');
+            $new_password = trim($_POST['newPassword'] ?? '');
+            
             // Validate input
-            if (empty($full_name)) {
+            if (empty($full_name) || empty($role)) {
                 $_SESSION['error'] = 'Vui lòng nhập đầy đủ thông tin bắt buộc';
-                header('Location: index.php?controller=user&action=update');
-                exit();
-            }
-
-            // Check email exists (if changed)
-            if ($email !== $user['email'] && $this->userModel->getUserByEmail($email)) {
-                $_SESSION['error'] = 'Email đã tồn tại';
-                header('Location: index.php?controller=user&action=update');
+                header('Location: index.php?controller=user&action=update&id=' . $userId);
                 exit();
             }
 
@@ -68,38 +78,25 @@ class UserController {
             $updateData = [
                 'email' => $email,
                 'full_name' => $full_name,
-                'phone' => $phone
+                'phone' => $phone,
+                'role' => $role
             ];
 
-            // Handle password change
-            if (!empty($current_password)) {
-                if (!password_verify($current_password, $user['password'])) {
-                    $_SESSION['error'] = 'Mật khẩu hiện tại không đúng';
-                    header('Location: index.php?controller=user&action=update');
-                    exit();
-                }
+            // Update user information
+            $updateSuccess = $this->userModel->updateUser($userId, $updateData);
 
-                if ($new_password !== $confirm_password) {
-                    $_SESSION['error'] = 'Mật khẩu mới không khớp';
-                    header('Location: index.php?controller=user&action=update');
-                    exit();
-                }
-
-                $updateData['password'] = $new_password;
+            // Update password if provided
+            if (!empty($new_password)) {
+                $updateSuccess = $updateSuccess && $this->userModel->updatePassword($userId, $new_password);
             }
 
-            // Update user
-            if ($this->userModel->updateUser($userId, $updateData)) {
-                // Update session
-                $_SESSION['user']['email'] = $email;
-                $_SESSION['user']['full_name'] = $full_name;
-                
+            if ($updateSuccess) {
                 $_SESSION['success'] = 'Cập nhật thông tin thành công!';
-                header('Location: index.php?controller=user&action=update');
+                header('Location: index.php?controller=user&action=index');
                 exit();
             } else {
                 $_SESSION['error'] = 'Cập nhật thông tin thất bại';
-                header('Location: index.php?controller=user&action=update');
+                header('Location: index.php?controller=user&action=update&id=' . $userId);
                 exit();
             }
         }

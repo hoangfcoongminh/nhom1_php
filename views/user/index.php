@@ -20,17 +20,17 @@
                 </tr>
             </thead>
             <tbody>
-                <?php foreach ($users as $user): ?>
+                <?php foreach ($users as $u): ?>
                 <tr>
-                    <td><?php echo $user['id']; ?></td>
-                    <td><?php echo $user['username']; ?></td>
-                    <td><?php echo $user['email']; ?></td>
-                    <td><?php echo $user['full_name']; ?></td>
-                    <td><?php echo $user['phone']; ?></td>
-                    <td><?php echo $user['role']; ?></td>
+                    <td><?php echo $u['id']; ?></td>
+                    <td><?php echo $u['username']; ?></td>
+                    <td><?php echo $u['email']; ?></td>
+                    <td><?php echo $u['full_name']; ?></td>
+                    <td><?php echo $u['phone']; ?></td>
+                    <td><?php echo $u['role']; ?></td>
                     <td>
-                        <a href="index.php?controller=user&action=update&id=<?php echo $user['id']; ?>" class="btn btn-sm btn-warning">Sửa</a>
-                        <a href="index.php?controller=user&action=delete&id=<?php echo $user['id']; ?>" class="btn btn-sm btn-danger" onclick="return confirm('Bạn có chắc chắn muốn xóa?')">Xóa</a>
+                        <a href="index.php?controller=user&action=update&id=<?php echo $u['id']; ?>" class="btn btn-sm btn-warning">Sửa</a>
+                        <a href="index.php?controller=user&action=delete&id=<?php echo $u['id']; ?>" class="btn btn-sm btn-danger" onclick="return confirm('Bạn có chắc chắn muốn xóa?')">Xóa</a>
                     </td>
                 </tr>
                 <?php endforeach; ?>

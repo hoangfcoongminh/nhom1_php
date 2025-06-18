@@ -10,21 +10,21 @@
             ?>
         </div>
     <?php endif; ?>
-    <form action="index.php?controller=user&action=update" method="POST" class="needs-validation" novalidate>
+    <form action="index.php?controller=user&action=update&id=<?php echo $user['id']; ?>" method="POST" class="needs-validation" novalidate>
         <input type="hidden" name="id" value="<?php echo $user['id']; ?>">
         <div class="mb-3">
             <label for="username" class="form-label">Tên đăng nhập</label>
             <input type="text" class="form-control" id="username" name="username" 
-                   value="<?php echo htmlspecialchars($user['username']); ?>" required>
+                   value="<?php echo htmlspecialchars($user['username']); ?>" readonly>
         </div>
         <div class="mb-3">
             <label for="password" class="form-label">Mật khẩu mới (để trống nếu không muốn thay đổi)</label>
-            <input type="password" class="form-control" id="password" name="password">
+            <input type="password" class="form-control" id="newPassword" name="newPassword">
         </div>
         <div class="mb-3">
             <label for="email" class="form-label">Email</label>
             <input type="email" class="form-control" id="email" name="email" 
-                   value="<?php echo htmlspecialchars($user['email']); ?>" required>
+                   value="<?php echo htmlspecialchars($user['email']); ?>">
         </div>
         <div class="mb-3">
             <label for="full_name" class="form-label">Họ và tên</label>

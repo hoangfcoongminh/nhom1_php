@@ -90,7 +90,8 @@ class User {
         $query = "UPDATE " . $this->table_name . "
                 SET email = :email,
                     full_name = :full_name,
-                    phone = :phone
+                    phone = :phone,
+                    role = :role
                 WHERE id = :id";
 
         $stmt = $this->conn->prepare($query);
@@ -99,6 +100,7 @@ class User {
         $stmt->bindParam(":email", $data['email']);
         $stmt->bindParam(":full_name", $data['full_name']);
         $stmt->bindParam(":phone", $data['phone']);
+        $stmt->bindParam(":role", $data['role']);
         $stmt->bindParam(":id", $id);
 
         if($stmt->execute()) {

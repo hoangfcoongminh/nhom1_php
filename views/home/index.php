@@ -4,7 +4,7 @@
     <div class="container">
         <h1 class="display-4 mb-4">Hệ thống quản lý sân thể thao</h1>
         <p class="lead mb-4">Giải pháp toàn diện cho việc quản lý và đặt sân thể thao</p>
-        <a href="index.php?controller=booking&action=list" class="btn btn-primary btn-lg">
+        <a href="index.php?controller=field&action=list" class="btn btn-primary btn-lg">
             <i class="fas fa-calendar-plus me-2"></i>Đặt sân ngay
         </a>
     </div>

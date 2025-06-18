@@ -1,1 +1,1 @@
-# nhom1_php
+Schema name "sports_management"
